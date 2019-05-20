@@ -69,9 +69,10 @@ public class SsoWebLoginHelper {
      */
     public static XxlSsoUser loginCheck(HttpServletRequest request, HttpServletResponse response){
 
+    	//获取cookie的id
         String cookieSessionId = CookieUtil.getValue(request, Conf.SSO_SESSIONID);
 
-        // cookie user
+        //根据sessionId获取xxl-sso用户数据，实现登录 cookie user
         XxlSsoUser xxlUser = SsoTokenLoginHelper.loginCheck(cookieSessionId);
         if (xxlUser != null) {
             return xxlUser;

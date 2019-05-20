@@ -104,7 +104,7 @@ public class WebController {
             return "redirect:/login";
         }
 
-        // 1、make xxl-sso user
+        // 1、封装xxl-sso用户信息
         XxlSsoUser xxlUser = new XxlSsoUser();
         xxlUser.setUserid(String.valueOf(result.getData().getUserid()));
         xxlUser.setUsername(result.getData().getUsername());
@@ -113,10 +113,10 @@ public class WebController {
         xxlUser.setExpireFreshTime(System.currentTimeMillis());
 
 
-        // 2、make session id
+        // 2、 获取sessionId
         String sessionId = SsoSessionIdHelper.makeSessionId(xxlUser);
 
-        // 3、login, store storeKey + cookie sessionId
+        // 3、将sessionId存入cookie中，login, store storeKey + cookie sessionId
         SsoWebLoginHelper.login(response, sessionId, xxlUser, ifRem);
 
         // 4、return, redirect sessionId

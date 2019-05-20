@@ -45,7 +45,7 @@ public class XxlSsoWebFilter extends HttpServlet implements Filter {
         // make url
         String servletPath = req.getServletPath();
 
-        // excluded path check
+        // 排除地址，直接放行，excluded path check
         if (excludedPaths!=null && excludedPaths.trim().length()>0) {
             for (String excludedPath:excludedPaths.split(",")) {
                 String uriPattern = excludedPath.trim();
@@ -60,7 +60,7 @@ public class XxlSsoWebFilter extends HttpServlet implements Filter {
             }
         }
 
-        // logout path check
+        // 注销，logout path check
         if (logoutPath!=null
                 && logoutPath.trim().length()>0
                 && logoutPath.equals(servletPath)) {
@@ -75,21 +75,24 @@ public class XxlSsoWebFilter extends HttpServlet implements Filter {
             return;
         }
 
-        // valid login user, cookie + redirect
+        //读取客户端cookie获取登录会员数据从redis中，valid login user, cookie + redirect
         XxlSsoUser xxlUser = SsoWebLoginHelper.loginCheck(req, res);
 
-        // valid login fail
+        //如果cookie为空，	 valid login fail
         if (xxlUser == null) {
 
             String header = req.getHeader("content-type");
             boolean isJson=  header!=null && header.contains("json");
             if (isJson) {
 
+            	//jwt方式
                 // json msg
                 res.setContentType("application/json;charset=utf-8");
                 res.getWriter().println("{\"code\":"+Conf.SSO_LOGIN_FAIL_RESULT.getCode()+", \"msg\":\""+ Conf.SSO_LOGIN_FAIL_RESULT.getMsg() +"\"}");
                 return;
             } else {
+            	
+            	//web请求的，重定向
 
                 // total link
                 String link = req.getRequestURL().toString();
